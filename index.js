@@ -59,6 +59,8 @@ var SmartBanner = function (options) {
 		force: '', // put platform type ('ios', 'android', etc.) here for emulation
 		close: null,
 		show: null,
+		cookieClosedName: 'smartbanner-closed',
+		cookieInstalledName: 'smartbanner-installed',
 		hookHide: null, // hook for hide function
 		hookShow: null, // hook for show function
 		hookClose: null, // hook for close function
@@ -100,8 +102,8 @@ var SmartBanner = function (options) {
 	var isMobileSafari = (this.type === 'ios' && agent.browser.name === 'Mobile Safari' && parseInt(agent.os.version, 10) >= 6);
 
 	var runningStandAlone = navigator.standalone;
-	var userDismissed = cookie.get(this.appId + '-smartbanner-closed');
-	var userInstalled = cookie.get(this.appId + '-smartbanner-installed');
+	var userDismissed = cookie.get(this.options.cookieClosedName);
+	var userInstalled = cookie.get(this.options.cookieInstalledName);
 
 	if (isMobileSafari || runningStandAlone || userDismissed || userInstalled) {
 		return;
@@ -186,7 +188,7 @@ SmartBanner.prototype = {
 	},
 	close: function () {
 		this.hide();
-		cookie.set(this.appId + '-smartbanner-closed', 'true', {
+		cookie.set(this.options.cookieClosedName, 'true', {
 			path: '/',
 			expires: new Date(Number(new Date()) + (this.options.daysHidden * 1000 * 60 * 60 * 24))
 		});
@@ -196,7 +198,7 @@ SmartBanner.prototype = {
 	},
 	install: function () {
 		this.hide();
-		cookie.set(this.appId + '-smartbanner-installed', 'true', {
+		cookie.set(this.options.cookieInstalledName, 'true', {
 			path: '/',
 			expires: new Date(Number(new Date()) + (this.options.daysReminder * 1000 * 60 * 60 * 24))
 		});
